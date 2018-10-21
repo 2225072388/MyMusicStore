@@ -1,0 +1,187 @@
+*{
+    border: 0;
+    padding: 0;
+} 
+
+/*背景设置*/
+.bg{
+    width: 600px;
+    height: 600px;
+    margin: 80px auto;
+    background-image: linear-gradient(0deg,#3c1d14,#71392a);
+}
+/* 背景设置结束 */
+
+/* 字体设置 */
+h2{
+    width: 600px;
+    padding-top: 10px;
+    font-size: 70px;
+    font-family: "微软雅黑";
+    text-align: center;
+    color: #b67867;
+    text-shadow: 5px 5px 5px #200a08;
+}
+p{
+    width: 600px;
+    font-size: 20px;
+    font-family: "微软雅黑";
+    text-align: center;
+    color: #BE7E6C;
+    text-shadow: 2px 2px 2px #200a08;
+
+}
+.p1{
+    font-size: 12px;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 60px;
+    height: 20px;
+    width: 40px;
+    border-radius: 5px;
+    background-color: orange;
+    border: 1px solid white;
+    box-shadow: 5px 5px 5px black;
+}
+/*.p2{
+    font-size: 12px;
+    position: absolute;
+    margin-top: 300px;
+    margin-left: 60px;
+    height: 20px;
+    width: 80px;
+    border-radius: 5px;
+    background-color: orange;
+    border: 1px solid white;
+    box-shadow: 5px 5px 5px black;
+}
+*/
+/* 字体设置结束*/
+
+/* 图片设置开始*/
+.bg1{
+    width: 400px;
+    height: 300px;
+    position: absolute;
+    background-color: #fff;
+    margin: 0 auto;
+    left: 50%;top: 55%;
+    border-radius: 10px;
+    box-shadow: 0px 20px 20px #200a08;
+    margin-left: -200px;
+    margin-top: -150px;
+}
+span{
+    float: left;
+    width: 300px;
+    height: 300px;
+    border-radius: 10px 0 0 10px;
+    background: white;
+    box-sizing: border-box;
+}
+.b{
+    background-image: url(images/fc.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100px;
+    height: 300px;
+    border-radius: 0 10px 10px 0;
+    background-color: #A98659;
+}
+.cd{
+    background: url(images/cd.png) no-repeat;
+    width: 248px;
+    height: 248px;
+    position: absolute;
+    left: 40%;top: 50%;
+    z-index: 99;
+    margin-left: -124px;
+    margin-top: -125px;
+
+    animation: move 20s linear infinite;
+    -webkit-animation: move 20s linear infinite;
+    -ms-animation: move 20s linear infinite;
+    -moz-animation: move 20s linear infinite;
+    -o-animation: move 20s linear infinite;
+
+}
+.cd_bg{
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    position: absolute;
+    left: 40%;top: 50%;
+    z-index: 1;
+    margin-left: -124px;
+    margin-top: -125px;
+    box-shadow: 15px 15px 20px #333;
+}
+@keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+@-ms-keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+@-moz-keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+@-o-keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+/*
+.bg1 .cd{
+    height: 360px;
+    width: 290px;
+    position:absolute;
+    background: url(images/cd.png) no-repeat center center;
+    animation: move 10s 1ms infinite;
+    box-shadow: 5px 5px 5px #000 inset;
+    
+}
+@keyframes move{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+.bg1 .cd_bg{
+    position: absolute;
+    height: 320px;
+    width: 150px;
+    background: url(images/fc.png) no-repeat center center;
+    background-color: #A98659;
+    right: 0;
+    border-radius: 5px;
+}
+/* 图片设置结束*/
