@@ -48,8 +48,8 @@ img{
     position: absolute;
     top: 66%;
     display: none;
-    font-size: 18px;
-    color: red;
+    font-size: 30px;
+    color: #666;
     line-height: 51px;
     text-align: center;
 }
