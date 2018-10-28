@@ -1,4 +1,5 @@
 .box{
+    position: relative;
     width: 360px;
     height: 198px;
     border: 1px solid #eee;
