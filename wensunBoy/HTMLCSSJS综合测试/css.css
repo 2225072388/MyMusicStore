@@ -1,0 +1,53 @@
+body,ul,li,img{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.all{
+    width: 500px;
+    height: 200px;
+    padding: 5px;
+    position: relative;
+    border: 1px solid white;
+    margin: 100px auto;
+    overflow: hidden;
+}
+.all img{
+    width: 520px;
+    /*清除照片的3px缝隙*/
+    display: block;
+}
+.pic{
+    width: 520px;
+    height: 200px;
+    position: relative;
+}
+.pic ul{
+    position: absolute;
+    top: 0px;
+    width: 2600px;
+}
+.pic ul li{
+    float: left;
+}
+/* 编号的样式 */
+.all ol{
+    position: absolute;
+    left: 50%;
+    margin-left: 65px;
+    bottom: 0px;
+}
+#nav_ol li{
+    background-color: white;
+    float: left;
+    width: 20px;
+    height: 20px;
+    /*编号间的距离*/
+    margin-right: 10px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+}
+#nav_ol li.current{
+    background-color: orange;
+}
