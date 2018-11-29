@@ -9,7 +9,7 @@ namespace MusicStore
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -25,7 +25,15 @@ namespace MusicStore
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/Site.css"));
+
+            //绑定JqueryUI的样式库
+            bundles.Add(new StyleBundle("~/Content/JqueryUI").Include(
+                "~/Content/themes/base/jquery-ui.css"
+                ));
+            //绑定JqueryUI的脚本库
+            bundles.Add(new ScriptBundle("~/bundles/JqueryUI").Include(
+                      "~/Content/themes/base/jquery-ui-{version}.js"));
         }
     }
 }
