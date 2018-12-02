@@ -18,8 +18,8 @@ namespace MusicStore.Controllers
         /// <returns></returns>
         public ActionResult login(Guid id)
         {
-            var detail = _context.Albums.Find(id);
-            return View(detail);
+            var account = _context.Albums.Find(id);
+            return View(account);
         }
         //public ActionResult Register()
         //{
