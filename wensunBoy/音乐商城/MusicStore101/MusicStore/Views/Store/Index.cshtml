@@ -1,0 +1,19 @@
+﻿@model IEnumerable<MusicStoreEntity.Genre>
+
+@{
+    ViewBag.Title = "所有音乐分类";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+<h2>所有音乐分类</h2>
+    <h5>共有 @Model.Count() 个分类</h5>
+    <ul id="list-unstyled">
+        @foreach (var item in Model)
+        {
+            <li>
+                <i class="glyphicon glyphicon-music"></i>
+                @Html.ActionLink(item.Name,"Browser","Store",new { id=item.ID},null)
+                (@item.Albums.Count)
+            </li>
+        }
+    </ul>

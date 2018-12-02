@@ -32,7 +32,7 @@ body {
 #promotion {
     height: 300px;
     width: 700px;
-    margin-left: -50px;
+    margin-left: -100px;
     background: url(/content/Images/home-showcase.png) no-repeat;
 }
 
@@ -54,7 +54,7 @@ ul {
 
     ul#album-list {
         list-style: none;
-        margin-left: 0px;
+        margin-left: -100px;
     }
 
         ul#album-list li {
@@ -154,6 +154,7 @@ h2, h3 {
 
 h3 {
     color: #9B9993;
+    margin-left: -100px;
 }
 
     #header h1 a, h3 em {
