@@ -1,35 +1,43 @@
-﻿
+﻿@model MusicStore.ViewModels.LoginViewModel
+@using MusicStore.ViewModels
 @{
-    ViewBag.Title = "注册新用户";
+    ViewBag.Title = "登入";
     Layout = "~/Views/Shared/_NewLayout.cshtml";
+    var msg = "";
+    if (ViewBag.LoginUserStatus != null)
+    {
+        msg = (ViewBag.LoginUserStatus as LoginUserStatus).Message;
+    }
 }
+<h2>用户登入</h2><br />
+<p>如果没有用户名请点我 @Html.ActionLink("这里", "Register") 注册</p>
+@*<form></form>*@
+@using (Html.BeginForm("login", "Account", new { returnUrl=ViewBag.ReturnUrl},FormMethod.Post))
+{
+    <div>
+        <fieldset>
+            <legend>用户信息</legend>
 
-<h2>用户信息</h2>
-<fieldset>
-    <legend>用户信息</legend>
-    
-    <div class="editor-labe1">
-        <label for="UserName">用户名</label>
+            <div class="editor-labe1">
+                @Html.LabelFor(x => x.UserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(x => x.UserName, new { placeholder = "请输入用户登入名" })
+                @Html.ValidationMessageFor(x => x.UserName)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(x => x.PassWord)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(x => x.PassWord, new { placeholder = "请输入用户密码" })
+                @Html.ValidationMessageFor(x => x.PassWord)
+            </div>
+            <p class="text-danger">
+                @msg
+            </p>
+            <p>
+                <input type="submit" value="登录" class="btn btn-success">
+            </p>
+        </fieldset>
     </div>
-    <div class="editor-field">
-        <input data-val="true" data-val-required="用户名不能为空！" id="UserName" name="UserName"placeholder="用户名" type="text" value="" />
-        <span class="field-validation-valid" data-valmsg-for="UserName" data-valmsg-replace="true"></span>
-    </div>
-    <div class="editor-labe1">
-        <label for="Email">邮箱</label>
-    </div>
-    <div class="editor-field">
-        <input data-val="true" data-val-required="邮箱不能为空！"id="Email" name="Email" placeholder="邮箱" type="text" value="" />
-        <span class="field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-    </div>
-    <div class="editor-label">
-        <label for="PassWord">密码</label>
-    </div>
-    <div class="editor-field">
-        <input data-val="true" data-val-required="密码不能为空。" id="PassWord" name="PassWord" placeholder="密码" type="password">
-        <span class="field-validation-valid" data-valmsg-for="PassWord" data-valmsg-replace="true"></span>
-        </div>
-    <p>
-        <input type="submit" value="登录" class="btn btn-success">
-    </p>
-</fieldset>
+}
