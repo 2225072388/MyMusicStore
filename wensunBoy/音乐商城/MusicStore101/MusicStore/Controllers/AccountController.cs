@@ -16,16 +16,26 @@ namespace MusicStore.Controllers
         private static readonly EntityDbContext _context = new EntityDbContext();
         // GET: Account
         /// <summary>
-        /// 注册
+        /// 填写注册信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
 
-        public ActionResult Register()
+        public ActionResult Register(string returnUrl=null)
         {
-            //var detail = _context.Albums.Find(id);
-            //return View(detail);
+            if (string.IsNullOrEmpty(returnUrl))
+                ViewBag.ReturnUrl = Url.Action("Login", "Account");
+            else
+                ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Register(RegisterViewModel model)
+        {
+            //用户的保存 Person ApplicationUser
+            return View();
+
         }
         /// <summary>
         /// 登入方法
