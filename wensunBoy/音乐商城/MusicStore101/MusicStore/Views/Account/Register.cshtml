@@ -2,12 +2,12 @@
 @{
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_NewLayout.cshtml";
-    var msg = "";
+    //var msg = "";
 }
 
 
 <h2>用户注册</h2>
-@using (Html.BeginForm("register", "account", FormMethod.Post))
+@using (Html.BeginForm("Register", "account", FormMethod.Post))
 {
     //表单内容
     @Html.AntiForgeryToken()
@@ -29,6 +29,14 @@
                 @Html.TextBoxFor(x => x.Email, new { placeholder = "请输入邮箱" })
                 @Html.ValidationMessageFor(x => x.Email)
             </div>
+            <div class="editor-labe1">
+                @Html.LabelFor(x => x.FullName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(x => x.FullName, new { placeholder = "请输入用户姓名" })
+                @Html.ValidationMessageFor(x => x.FullName)
+            </div>
+
             <div class="editor-label">
                 @Html.LabelFor(x => x.PassWord)
             </div>
@@ -37,15 +45,15 @@
                 @Html.ValidationMessageFor(x => x.PassWord)
             </div>
             <div class="editor-label">
-                @Html.LabelFor(x => x.PassWord)
+                @Html.LabelFor(x => x.ConfirmPassWord)
             </div>
             <div class="editor-field">
-                @Html.PasswordFor(x => x.PassWord, new { placeholder = "请再次输入密码" })
-                @Html.ValidationMessageFor(x => x.PassWord)
+                @Html.PasswordFor(x => x.ConfirmPassWord, new { placeholder = "请再次输入密码" })
+                @Html.ValidationMessageFor(x => x.ConfirmPassWord)
             </div>
-            <p class="text-danger">
-                @msg
-            </p>
+            @*<p class="text-danger">
+        @msg
+    </p>*@
             <p>
                 <input type="submit" value="注册" class="btn btn-success">
             </p>
