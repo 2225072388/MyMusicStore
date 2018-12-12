@@ -21,6 +21,7 @@ namespace MusicStore.Controllers
             var detail = _context.Albums.Find(id);
             return View(detail);
         }
+
         /// <summary>
         /// 按分类显示专辑
         /// </summary>
@@ -28,9 +29,11 @@ namespace MusicStore.Controllers
         /// <returns></returns>
         public ActionResult Browser(Guid id)
         {
-            var list = _context.Albums.Where(x => x.Genre.ID == id).OrderByDescending(x => x.PublisherDate).ToList();
+            var list = _context.Albums.Where(x => x.Genre.ID == id)
+                .OrderByDescending(x => x.PublisherDate).ToList();
             return View(list);
         }
+
         /// <summary>
         /// 显示所有的分类
         /// </summary>

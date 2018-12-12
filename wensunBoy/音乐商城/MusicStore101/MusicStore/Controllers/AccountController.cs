@@ -13,14 +13,13 @@ namespace MusicStore.Controllers
 {
     public class AccountController : Controller
     {
-        private static readonly EntityDbContext _context = new EntityDbContext();
-        // GET: Account
+        // GET: Account 
+        // private static readonly EntityDbContext _context = new EntityDbContext();
+
         /// <summary>
         /// 填写注册信息
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-
         public ActionResult Register()
         {
             return View();
@@ -40,9 +39,9 @@ namespace MusicStore.Controllers
                     CredentialsCode = "",
                     Birthday = DateTime.Now,
                     Sex = true,
-                    MobileNumber = "17687724994",
+                    MobileNumber = "18866668888",
                     Email = model.Email,
-                    TelephoneNumber = "17687724994",
+                    TelephoneNumber = "18866668888",
                     Description = "",
                     CreateDateTime = DateTime.Now,
                     UpdateTime = DateTime.Now,
@@ -54,7 +53,7 @@ namespace MusicStore.Controllers
                     FirstName = model.FullName.Substring(0, 1),
                     LastName = model.FullName.Substring(1, model.FullName.Length - 1),
                     ChineseFullName = model.FullName,
-                    MobileNumber = "17687724994",
+                    MobileNumber = "18866668888",
                     Email = model.Email,
                     Person = person,
                 };
@@ -71,51 +70,53 @@ namespace MusicStore.Controllers
             return View();
         }
 
+
+
         /// <summary>
-        /// 登入方法
+        /// 登录方法
         /// </summary>
-        /// <param name="returnUrl">登入成功后跳转地址</param>
+        /// <param name="returnUrl">登录成功后跳转地址</param>
         /// <returns></returns>
         public ActionResult Login(string returnUrl = null)
         {
-            //var account = _context.Albums.Find(id);
-            //return View(account);
             if (string.IsNullOrEmpty(returnUrl))
                 ViewBag.ReturnUrl = Url.Action("index", "home");
             else
                 ViewBag.ReturnUrl = returnUrl;
+
             return View();
         }
-        [HttpPost] //此Action用来接收用户提交
+
+        [HttpPost]   //此Action用来接收用户提交
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model, string returnUrl)
         {
-            //return Json("OK");
-            //判断实体是否校验成功
+            //判断实体是否校验通过
             if (ModelState.IsValid)
             {
                 var loginStatus = new LoginUserStatus()
                 {
                     IsLogin = false,
-                    Message = "用户或密码错误！",
-
+                    Message = "用户或密码错误",
                 };
                 //登录处理
-                var userManage = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new EntityDbContext()));
+                var userManage =
+                    new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new EntityDbContext()));
                 var user = userManage.Find(model.UserName, model.PassWord);
                 if (user != null)
                 {
-
                     var roleName = "";
                     var context = new EntityDbContext();
                     foreach (var role in user.Roles)
                     {
                         roleName += (context.Roles.Find(role.RoleId) as ApplicationRole).DisplayName + ",";
                     }
+
                     loginStatus.IsLogin = true;
-                    loginStatus.Message = "登入成功！用户的角色：" + roleName;
+                    loginStatus.Message = "登录成功！用户的角色：" + roleName;
                     loginStatus.GotoController = "home";
                     loginStatus.GotoAction = "index";
+                    //把登录状态保存到会话
                     Session["loginStatus"] = loginStatus;
 
                     var loginUserSessionModel = new LoginUserSessionModel()
@@ -124,18 +125,31 @@ namespace MusicStore.Controllers
                         Person = user.Person,
                         RoleName = roleName,
                     };
-                    //把登入成功后用户信息保存到会话
+                    //把登录成功后用户信息保存到会话
                     Session["LoginUserSessionModel"] = loginUserSessionModel;
 
-                    //identity登入处理，创建aspnet的登录令牌Token
+                    //identity登录处理,创建aspnet的登录令牌Token
                     var identity = userManage.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
                     return Redirect(returnUrl);
                 }
-                
+                else
+                {
+                    if (string.IsNullOrEmpty(returnUrl))
+                        ViewBag.ReturnUrl = Url.Action("index", "home");
+                    else
+                        ViewBag.ReturnUrl = returnUrl;
+                    ViewBag.LoginUserStatus = loginStatus;
+                    return View();
+                }
             }
+            if (string.IsNullOrEmpty(returnUrl))
+                ViewBag.ReturnUrl = Url.Action("index", "home");
+            else
+                ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-        //注销方法
+
+        //注销
         public ActionResult LoginOut()
         {
             Session.Remove("loginStatus");
@@ -144,15 +158,15 @@ namespace MusicStore.Controllers
         }
 
         //修改密码
-      
         public ActionResult ChangePassWord()
         {
-            //用户先登入了才能修改密码
+            //用户先得登录才能修改
             if (Session["LoginUserSessionModel"] == null)
                 return RedirectToAction("Login");
 
             return View();
         }
+
         [HttpPost]
         public ActionResult ChangePassWord(ChangePassWordViewModel model)
         {

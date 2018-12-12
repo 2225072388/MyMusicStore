@@ -20,16 +20,17 @@ namespace MusicStore.Controllers
         public ActionResult Index()
         {
             var context = new EntityDbContext();
-            var list = context.Albums.OrderByDescending(x=>x.PublisherDate).Take(20).ToList();
+            var list = context.Albums.OrderByDescending(x => x.PublisherDate).Take(20).ToList();
             return View(list);
         }
+
         /// <summary>
         /// 测试登录
         /// </summary>
         /// <param name="username"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public string TestLogin(string username="messi",string pwd = "123.abc")
+        public string TestLogin(string username = "hs", string pwd = "123.abc")
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new MusicStoreEntity.EntityDbContext()));
             var user = userManager.Find(username, pwd);
@@ -38,26 +39,28 @@ namespace MusicStore.Controllers
                 var roleName = "";
                 var context = new MusicStoreEntity.EntityDbContext();
                 foreach (var role in user.Roles)
-                    roleName += (context.Roles.Find(role.RoleId) as ApplicationRole).DisplayName + "";
-
-                return "登入成功，用户属于："+roleName;
+                    roleName += (context.Roles.Find(role.RoleId) as ApplicationRole).DisplayName + " ";
+                return "登录成功，用户属于:" + roleName;
             }
             else
-                return "登录失败！！";
+                return "登录失败";
         }
+
         /// <summary>
-        /// 伪造攻击
+        ///  伪造攻击
         /// </summary>
         /// <returns></returns>
         public ActionResult TestHack()
         {
             return View();
         }
+
         /// <summary>
         /// 用C#进行跨站伪造攻击
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> TesthackC() {
+        public async Task<ActionResult> TesthackC()
+        {
             var client = new HttpClient();
             //初始化提交的参数
             var values = new List<KeyValuePair<string, string>>();

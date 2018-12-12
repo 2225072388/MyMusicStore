@@ -13,8 +13,8 @@ namespace MusicStore.ViewModels
     {
         //所有的购物项
         public List<Cart> CartItems { get; set; }
+
         //总价
         public decimal CartTotalPrice { get; set; }
-
     }
 }
