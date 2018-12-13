@@ -105,7 +105,7 @@ namespace MusicStore.Controllers
             var person = (Session["LoginUserSessionModel"] as LoginUserSessionModel).Person;
             //3.从会话中读出订单明细列表
 
-            //4.如果表单验证通过，则保存Order到数据库，跳转到Pay/AliPay
+            //4.如果表单验证通过，则保存Order到数据库（锁定进程），跳转到Pay/AliPay
 
             //5.如果表单验证不通过，返回试图
 
