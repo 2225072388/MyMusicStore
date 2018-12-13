@@ -1,4 +1,5 @@
-﻿using MusicStore.ViewModels;
+﻿using MusicStore;
+using MusicStore.ViewModels;
 using MusicStoreEntity;
 using System;
 using System.Collections.Generic;
@@ -93,21 +94,55 @@ namespace MusicStore.Controllers
         /// <summary>
         /// 处理用户提交下单
         /// </summary>
-        /// <param name="oder"></param>
+        /// <param name="order"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Buy(Order oder)
+        public ActionResult Buy(Order order)
         {
             //1.判断用户登录凭据是否过期，如果过期跳转回登录页，登录成功后返回确认购买页
             if (Session["LoginUserSessionModel"] == null)
                 return RedirectToAction("login", "Account", new { returnUrl = Url.Action("Buy", "Order") });
             //2.读出当前用户Person
             var person = (Session["LoginUserSessionModel"] as LoginUserSessionModel).Person;
+            order.Person = _context.Persons.Find(person.ID);
             //3.从会话中读出订单明细列表
+            order.OrderDetails = new List<OrderDetail>();
+            order.TotalPrice = 0.00M;
+
+            var details = (Session["Order"] as Order).OrderDetails;
+            foreach (var item in details)
+            {
+                item.Album = _context.Albums.Find(item.Album.ID);
+                order.OrderDetails.Add(item);
+            }
+            order.TotalPrice = (from item in order.OrderDetails select item.Count * item.Album.Price).Sum();
+
 
             //4.如果表单验证通过，则保存Order到数据库（锁定进程），跳转到Pay/AliPay
 
+            if (ModelState.IsValid)
+            {
+                //加锁
+                LockHelp.ThreadLocked(order.ID);
+                try
+                {
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
+
+                    //清空购物车
+                }
+                catch { }
+                finally
+                {
+                    LockHelp.ThreadUnLocked(order.ID);
+                }
+
+                //跳转到支付宝Pay/AliPay
+                return RedirectToAction("Alipay", "Pay", new { id = order.ID });
+            }
+
             //5.如果表单验证不通过，返回试图
+
 
             return View();
         }

@@ -19,7 +19,7 @@ namespace MusicStore
         /// 加锁
         /// </summary>
         /// <param name="id">主键</param>
-        public static void ThreadLock(Guid id)
+        public static void ThreadLocked(Guid id)
         {
             _Mutex.WaitOne();
             SemaphoreSlim Slim;
