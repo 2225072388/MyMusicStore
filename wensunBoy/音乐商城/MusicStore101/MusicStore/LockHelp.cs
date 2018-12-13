@@ -40,7 +40,15 @@ namespace MusicStore
         /// <param name="id">主键</param>
         public static void ThreadUnLocked(Guid id)
         {
-
+            var slim = _Slim[id];
+            if (_Count[id] == 1)
+            {
+                _Count.Remove(id);
+                _Slim.Remove(id);
+            }
+            else
+                _Count[id]--;
+            slim.Release();
         }
     }
 }
