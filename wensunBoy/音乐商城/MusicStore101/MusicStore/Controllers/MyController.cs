@@ -12,6 +12,10 @@ namespace MusicStore.Controllers
     {
          private static readonly EntityDbContext _context = new EntityDbContext();
         // GET: My
+        //public ActionResult Add()
+        //{
+        //    return View();
+        //}
         public ActionResult Index()
         {
             EntityDbContext _context = new EntityDbContext();
