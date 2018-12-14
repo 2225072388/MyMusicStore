@@ -123,7 +123,7 @@ namespace MusicStore.Controllers
             if (ModelState.IsValid)
             {
                 //加锁
-                LockHelp.ThreadLocked(order.ID);
+                LockedHelp.ThreadLocked(order.ID);
                 try
                 {
                     _context.Orders.Add(order);
@@ -134,7 +134,7 @@ namespace MusicStore.Controllers
                 catch { }
                 finally
                 {
-                    LockHelp.ThreadUnLocked(order.ID);
+                    LockedHelp.ThreadUnLocked(order.ID);
                 }
 
                 //跳转到支付宝Pay/AliPay
@@ -142,8 +142,6 @@ namespace MusicStore.Controllers
             }
 
             //5.如果表单验证不通过，返回试图
-
-
             return View();
         }
 
@@ -153,7 +151,15 @@ namespace MusicStore.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            return View();
+            //1.确认用户是否登录 是否登录过期
+            if (Session["LoginUserSessionModel"] == null)
+                return RedirectToAction("login", "Account", new { returnUrl = Url.Action("Index", "Order") });
+
+            //2.查询出当前用户Person 查询该用户的购物项
+            var person = (Session["LoginUserSessionModel"] as LoginUserSessionModel).Person;
+            var Order = _context.Orders.Where(x => x.Person.ID == person.ID).ToList();
+
+            return View(Order);
         }
     }
 }

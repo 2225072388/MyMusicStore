@@ -9,7 +9,7 @@ namespace MusicStore
     /// <summary>
     /// 对内存中的Guid值加锁处理，防止进程互斥
     /// </summary>
-    public class LockHelp
+    public class LockedHelp
     {
         public static Mutex _Mutex = new Mutex();
         private static readonly Dictionary<Guid, SemaphoreSlim> _Slim = new Dictionary<Guid, SemaphoreSlim>();
