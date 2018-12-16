@@ -130,6 +130,20 @@ namespace MusicStore.Controllers
                     _context.SaveChanges();
 
                     //清空购物车
+                    var carts = _context.Carts.Where(x => x.Person.ID == person.ID).ToList();
+                    foreach (var cart in carts)
+                    {
+                        _context.Carts.Remove(cart);
+                    }
+                    _context.SaveChanges();
+                    //把订单中的收件人信息保存到Person中
+                    var p = _context.Persons.Find(person.ID);
+                    p.MobileNumber = order.MobilNumber;
+                    p.Address = order.Address;
+                    p.Name = order.AddressPerson;
+                    p.FirstName = p.Name.Substring(0, 1);
+                    p.LastName = p.Name.Substring(1, p.Name.Length - 1);
+                    _context.SaveChanges();
                 }
                 catch { }
                 finally
@@ -155,11 +169,11 @@ namespace MusicStore.Controllers
             if (Session["LoginUserSessionModel"] == null)
                 return RedirectToAction("login", "Account", new { returnUrl = Url.Action("Index", "Order") });
 
-            //2.查询出当前用户Person 查询该用户的购物项
+            //2.查询出当前用户Person 查询该用户的购物订单列表
             var person = (Session["LoginUserSessionModel"] as LoginUserSessionModel).Person;
-            var Order = _context.Orders.Where(x => x.Person.ID == person.ID).ToList();
+            var Orders = _context.Orders.Where(x => x.Person.ID == person.ID).ToList();
 
-            return View(Order);
+            return View(Orders);
         }
     }
 }
