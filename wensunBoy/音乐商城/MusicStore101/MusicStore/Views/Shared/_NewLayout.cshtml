@@ -61,14 +61,16 @@
                 //登入成功显示用户名字，点名字能展开向下的菜单
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="@user.Person.Avarda" alt="头像" id="Avarda" />
+                        <img src="@user.Person.Avarda" alt="头像" id="userAvarda" />
                         @user.Person.Name
-                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        <span id="city" class="glyphicon glyphicon-map-marker">定位中...</span>
+                        <span id="district"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="@Url.Action("Index", "ShoppingCart")">购物车(@carts.Count)</a></li>
                         <li><a href="@Url.Action("Index", "Order")">我的订单</a></li>
-                        <li><a href="@Url.Action("index", "My")">设置收件人</a></li>
+                        @*<li><a href="@Url.Action("Index", "My")">我的</a></li>*@
+                        <li><a href="@Url.Action("Index", "My")">设置收件人</a></li>
                         <li><a href="@Url.Action("ChangePassWord", "Account")">修改密码</a></li>
                         <li><a href="@Url.Action("Loginout", "Account")">注销</a></li>
                     </ul>
@@ -79,9 +81,12 @@
 
     <div class="container">
         <div class="row">
+            
             <div class="col-md-3">
                 @*左侧导航*@
+                
                 @Html.Partial("_GetGenreMenu", new MusicStoreEntity.EntityDbContext().Genres.ToList())
+                
             </div>
             <div class="col-md-9">
                 @*操作区*@
@@ -99,3 +104,46 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mKNsv8BifpOEERjGwj80FS9agwndhdw2"></script>
+<script>
+
+    // 定位
+    var geolocation = new BMap.Geolocation();
+    geolocation.getCurrentPosition(function (r) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+            Lng = r.point.lng;
+            Lat = r.point.lat;
+            console.log(r);
+            if (r.address.district !== "") {
+                document.getElementById('district').innerText = r.address.district;
+            }
+            if (r.address.city !== "") {
+                document.getElementById('city').innerText = r.address.city;
+                $.ajax({
+                    url: "../home/GetWeather",
+                    data: { city: r.address.city },
+                    datatype: "json",
+                    type: "post",
+                    success: function (data) {
+                        $("#divWeather").html(data);
+                    }
+                });
+            }
+            else {
+                document.getElementById('city').innerText = "柳州市";
+                $.ajax({
+                    url: "../home/GetWeather",
+                    data: { city: "柳州市" },
+                    datatype: "json",
+                    type: "post",
+                    success: function (data) {
+                        $("#divWeather").html(data);
+                    }
+                });
+            }
+        }
+        else {
+            document.getElementById('city').innerText = "定位失败";
+        }
+    }, { enableHighAccuracy: true });
+</script>
