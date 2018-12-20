@@ -2,7 +2,39 @@
 @{
     ViewBag.Title = "首页";
 }
-<div id="promotion"></div>
+
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <!-- 标签栏 -->
+        <div class='tab-head' id='tab-head'>
+            <div class='tab-head-div current'></div>
+            <div class='tab-head-div'></div>
+            <div class='tab-head-div'></div>
+            <div class='tab-head-div'></div>
+            <div class='tab-head-div tab-head-right'></div>
+        </div>
+        <!-- 内容 -->
+        <div class='tab-body' id='tab-body'>
+            <ul class='tab-body-ul current'>
+                <li><a href="#"><img src="~/Content/Images/1.jpg" alt='广告' style="width:800px; height:350px;"></a></li>
+            </ul>
+            <ul class='tab-body-ul'>
+                <li><a href="#"><img src="~/Content/Images/2.jpg" alt='广告' style="width:800px; height:350px;"></a></li>
+            </ul>
+            <ul class='tab-body-ul'>
+                <li><a href="#"><img src="~/Content/Images/3.jpg" alt='广告' style="width:800px; height:350px;"></a></li>
+            </ul>
+            <ul class='tab-body-ul'>
+                <li><a href="#"><img src="~/Content/Images/4.jpg" alt='广告' style="width:800px; height:350px;"></a></li>
+            </ul>
+            <ul class='tab-body-ul'>
+                <li><a href="#"><img src="~/Content/Images/5.jpg" alt='广告' style="width:800px; height:350px;"></a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+@*<div id="promotion"></div>*@
 <h3><em>新歌</em>上架</h3>
 <div>
     <ul id="album-list">
@@ -10,7 +42,7 @@
         {
             <li>
                 <a href="@Url.Action("detail","store",new {id=item.ID})">
-                    <img alt="@item.Title" src="@item.AlbumArtUrl" />
+                    <img alt="@item.Title" src="@item.AlbumArtUrl" id="album-banner" />
                     <span>@item.Artist.Name</span>.<span>@item.Title</span>
                 </a>
             </li>
@@ -47,3 +79,128 @@
         <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
     </div>
 </div>*@
+<script>
+        //当页面加载时执行此方法
+        window.onload = function () {
+            //获取所有的tab-head-div
+            var head_divs = document.getElementById('tab-head').getElementsByTagName('div');
+            //保存当前焦点元素的索引值
+            var current_index = 0;
+            //启动定时器
+            var timer = setInterval(autuCheck, 2000);
+            //遍历head元素
+            for (var i = 0; i < head_divs.length; i++) {
+                //添加鼠标悬停的事件
+                head_divs[i].onmouseover = function () {
+                    clearInterval(timer);
+                    if (i != current_index) {
+                        head_divs[current_index].style.backgroundColor = '';
+                        head_divs[current_index].style.borderBottom = '';
+                    }
+                    //获取所有的tab-body-ul
+                    var body_uls = document.getElementById('tab-body').getElementsByTagName('ul');
+                    //遍历所有的tab-body-ul
+                    for (var i = 0; i < body_uls.length; i++) {
+                        //将所有的元素隐藏 去掉current类名
+                        body_uls[i].className = body_uls[i].className.replace(' current', '');
+                        head_divs[i].className = head_divs[i].className.replace(' current', '');
+                        //将当前索引对应的元素设为显示
+                        if (head_divs[i] == this) {
+                            this.className += ' current';
+                            body_uls[i].className += ' current';
+                        }
+                    }
+                }
+                //添加鼠标的移出事件
+                head_divs[i].onmouseout = function () {
+                    timer = setInterval(autuCheck, 2000);
+                }
+            }
+            //定义定时器，按周期tab栏的切换
+            function autuCheck() {
+                //每间隔对应周期 ，标签索引值自增
+                ++current_index;
+                //当索引值自增到上限 重置为0
+                if (current_index == head_divs.length)
+                    current_index = 0;
+                //切换标签后修改current标签的样式
+                for (var i = 0; i < head_divs.length; i++) {
+                    if (i == current_index) {
+                        head_divs[i].style.backgroundColor = '#fff';
+                        head_divs[i].style.borderBottom = '1px solid #fff';
+                    }
+                    else {
+                        head_divs[i].style.backgroundColor = '';
+                        head_divs[i].style.borderBottom = '';
+                    }
+                }
+                //切换显示的内容
+                //获取所有的tab-body-ul
+                var body_uls = document.getElementById('tab-body').getElementsByTagName('ul');
+                //遍历所有的tab-body-ul
+                for (var i = 0; i < body_uls.length; i++) {
+                    //将所有的元素隐藏 去掉current类名
+                    body_uls[i].className = body_uls[i].className.replace(' current', '');
+                    head_divs[i].className = head_divs[i].className.replace(' current', '');
+                    //将当前索引对应的元素设为显示
+                    if (head_divs[i] == head_divs[current_index]) {
+                        this.className += ' current';
+                        body_uls[i].className += ' current';
+                    }
+                }
+            }
+        }
+</script>
+<style>
+    /* 大div的样式 */
+    .tab-box {
+        width: 800px;
+        height: 350px;
+        position: relative;
+        margin-left: 20%;
+    }
+    /* 选项标签的样式 */
+    .tab-head {
+        height: 10px;
+    }
+
+    .tab-head-div {
+        width: 15px;
+        height: 15px;
+        float: left;
+        border-bottom: 2px solid rgb(240, 178, 10);
+        border-right: 2px solid #ccc;
+        border-top: 2px solid rgb(206, 18, 18);
+        border-left: 2px solid rgb(20, 125, 211);
+        background: #666;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+        position: relative;
+        top: 345px;
+        left: 350px;
+        margin-left: 10px;
+        border: 5px;
+        border-radius: 50%;
+    }
+
+    .tab-head-right {
+        border-right: 0;
+    }
+
+    .tab-head .current {
+        background: wheat;
+        border-bottom: 0;
+    }
+    /* 选项内容的样式 */
+    .tab-body-ul {
+        display: none;
+    }
+
+        .tab-body-ul li {
+            list-style:none;
+        }
+    .tab-body .current {
+        display: block;
+    }
+</style>

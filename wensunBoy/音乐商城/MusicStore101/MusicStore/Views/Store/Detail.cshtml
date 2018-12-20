@@ -8,70 +8,143 @@
 
 <h2>@Model.Title</h2>
 
-<p>
+@*<p>
     <img alt="@Model.Title" src="@Model.AlbumArtUrl" />
-</p>
+</p>*@
 
-<div id="album-details">
-    <p>
-        <em>
-            发布时间：
-        </em>
-        @Model.PublisherDate.ToString("yyyy年MM月dd日");
-    </p>
-    <p>
-        <em>
-            分类：
-        </em>
-        @Model.Genre.Name
-    </p>
-    <p>
-        <em>
-            歌手：
-        </em>
-        @Model.Artist.Name
-    </p>
-    <p>
-        <em>
-            价格：
-        </em>
-        ￥@String.Format("{0:F}", Model.Price)
-    </p>
-
-    <div id="msg"></div>
-    <p class="button">
-        <a class="btn" id="addcart">添加到购物车</a>
-        <div id="msg"></div>
-    </p>
-
+<div id="box-video">
+    <div class="cd" style="background: url(@(Model.AlbumArtUrl)) no-repeat;">
+        <div class="cd-center">
+           
+        </div>
+    </div>
+    </div>
+<div>
+    <audio src="@Model.MusicUrl" controls preload="auto" loop></audio>
 </div>
 
-<script>
-    $("#addcart").click(function() {
-        //异步
-        $("#msg").html("<img src='../../content/images/ProgressIcon.gif'>添加到购物车，请稍候...");
-        $.ajax({
-            type: 'post',
-            async: true,
-            url: '../../ShoppingCart/AddCart',
-            data:{id:"@Model.ID" },
-            dataType: 'json',
-            success: function(data) {
-                //如果没有登录，跳转到登录页
-                if (data == "nologin") {
-                    location.href = "@Url.Action("login", "Account",
+    <div id="album-details">
+        <p>
+            <em>
+                发布时间：
+            </em>
+            @Model.PublisherDate.ToString("yyyy年MM月dd日");
+        </p>
+        <p>
+            <em>
+                分类：
+            </em>
+            @Model.Genre.Name
+        </p>
+        <p>
+            <em>
+                歌手：
+            </em>
+            @Model.Artist.Name
+        </p>
+        <p>
+            <em>
+                价格：
+            </em>
+            ￥@String.Format("{0:F}", Model.Price)
+        </p>
+
+        <div id="msg"></div>
+        <p class="button">
+            <a class="btn" id="addcart">添加到购物车</a>
+            <div id="msg"></div>
+        </p>
+        <p>
+        <em>
+            发表时间：
+        </em>
+        回复1：哇！太好听啦！
+    </p>
+    <p>
+        <em>
+            发表时间：
+        </em>
+        回复2：哇！太好听啦！
+    </p>
+    <p>
+        <em>
+            发表时间：
+        </em>
+        回复3：哇！太好听啦！
+    <p>
+        <em>
+            发表时间：
+        </em>
+        回复4：哇！太好听啦！
+    </p>
+    <p>
+        <em>
+            发表时间：
+        </em>
+        回复5：哇！太好听啦！
+    </p>
+    @*<p>
+        <textarea style="resize:none" id="reply" rows="5" cols="50"></textarea>
+        <br />
+            </p>*@
+        @*<br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />*@
+        <br />
+        <br />
+        <br />
+        <br />
+        <!-- 加载编辑器的容器 -->
+        <script id="container" name="content" type="text/plain">
+        </script>
+        <!-- 配置文件 -->
+        @*<script type="text/javascript" src="ueditor.config.js"></script>*@
+        <script type="text/javascript" src="~/Content/ueditor1_4_3-utf8-net/ueditor.config.js"></script>
+        <!-- 编辑器源码文件 -->
+        @*<script type="text/javascript" src="ueditor.all.js"></script>*@
+        <script type="text/javascript" src="~/Content/ueditor1_4_3-utf8-net/ueditor.all.js"></script>
+        <!-- 实例化编辑器 -->
+        <script type="text/javascript">
+            var ue = UE.getEditor('container');
+        </script>
+        <p>
+            <button class="btn btn-primary" id="btnreply">评论</button>
+        </p>
+    </div>
+
+    <script>
+        $("#addcart").click(function () {
+            //异步
+            $("#msg").html("<img src='../../content/images/ProgressIcon.gif'>添加到购物车，请稍候...");
+            $.ajax({
+                type: 'post',
+                async: true,
+                url: '../../ShoppingCart/AddCart',
+                data: { id: "@Model.ID" },
+                dataType: 'json',
+                success: function (data) {
+                    //如果没有登录，跳转到登录页
+                    if (data == "nologin") {
+                        location.href = "@Url.Action("login", "Account",
                                          new {returnUrl = Url.Action("Detail", "Store", new {id = Model.ID})})";
-                }
-                else {
-                    //添加到购物车成功，把动画取消
-                    $("#msg").html(data);
-                    //2秒后，自动重新刷新此区域
-                    setTimeout(function() {
+                    }
+                    else {
+                        //添加到购物车成功，把动画取消
+                        $("#msg").html(data);
+                        //2秒后，自动重新刷新此区域
+                        setTimeout(function () {
                             location.reload();
                         },
-                        2000);
+                            2000);
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
