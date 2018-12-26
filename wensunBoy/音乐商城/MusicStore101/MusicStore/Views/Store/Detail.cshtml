@@ -54,7 +54,7 @@
         <a class="btn" id="addcart">添加到购物车</a>
         <div id="msg"></div>
     </p>
-    <p>
+    @*<p>
             <em>
                 发表时间：
             </em>
@@ -82,96 +82,83 @@
                 发表时间：
             </em>
             回复5：哇！太好听啦！
-        </p>
+        </p>*@
     @*<p>
         <textarea style="resize:none" id="reply" rows="5" cols="50"></textarea>
         <br />
             </p>*@
     @*<br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />*@
     <br />
     <br />
-    <br />
-    <br />
-    <!-- 加载编辑器的容器 -->
+    <br />*@
+
+    @*@百度Ueditor的呈现*@
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-group">
+                <textarea id="editor"name="editor"></textarea>
+            </div>
+            <button id="btnCmt" type="button" class="btn btn-success">评论</button>
+        </div>
+    </div>
+
+
+     @*加载编辑器的容器
         <script id="container" name="content" type="text/plain">
         </script>
-        <!-- 配置文件 -->
-        @*<script type="text/javascript" src="ueditor.config.js"></script>*@
+        配置文件
     <script type="text/javascript" src="~/Content/ueditor1_4_3-utf8-net/ueditor.config.js"></script>
-     @*编辑器源码文件*@ 
-    @*<script type="text/javascript" src="ueditor.all.js"></script>*@
+     编辑器源码文件
     <script type="text/javascript" src="~/Content/ueditor1_4_3-utf8-net/ueditor.all.js"></script>
-         @*实例化编辑器*@
+         实例化编辑器
         <script type="text/javascript">
             var ue = UE.getEditor('container');
-        </script>
-        <p>
-            <button class="btn btn-primary" id="btnreply">评论</button>
-        </p>
-    @*<script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
-    <ul>
-        <li>
-            1号用户评论
-            <div>hello,我是第1条评论 2018-03-21 12:00:00 <a href="javascript:;" class="reply_btn">回复</a></div>
-        </li>
-        <li>
-            2号用户评论
-            <div>hello,我是第2条评论 2018-03-21 12:00:00 <a href="javascript:;" class="reply_btn">回复</a></div>
-        </li>
-        <li>
-            3号用户评论
-            <div>hello,我是第3条评论 2018-03-21 12:00:00 <a href="javascript:;" class="reply_btn">回复</a></div>
-        </li>
-    </ul>
+        </script>*@
 
-    <script type="text/javascript">
-        $(function () {
-            //页面加载完毕后开始执行的事件
-            $(".reply_btn").click(function () {
-                $(".reply_textarea").remove();
-                $(this).parent().append("<div class='reply_textarea'><textarea name='' cols='40' rows='5'></textarea><br/><input type='submit' value='发表' /></div>");
+    <script>
+        //百度编辑器调用
+        var editor = new baidu.editor.ui.Editor(
+            {
+                UEDITOR_HOME_URL: '/ueditor1_4_3-utf8-net/',//配置编译器的路径
+                iframeCssUrl: '/ueditor1_4_3-utf8-net/themes/iframe.css',//自定义样式路径
+                initialContent: '五星好评',//初始内容
+                autoHeightEnabled: true,//高度是否自动适应
+                minFrameHeight: 500//编译器最小的高度
             });
-        });
+        editor.render('editor');
+
+        //提交回复
+        $("#btnCmt").click(function () {
+            //获取到编辑器中的内容
+            UE.getEditor('editor');
+            var content = UE.geteditor('editor').getContent();
+            //console.log(content);
+
+            //ajax提交
+            $.ajax({
+                type: 'post',
+                asyn: true,
+                url: '@Url.Action("AddCmt","Store")',
+                data: {
+                    "id": "@Model.ID",
+                    "cmt": content,
+                    "reply": ""
+                },
+                dataType: "json",
+                success: function(data)
+                {
+                    if (data == 'nologon')
+                    {
+                        //如果没登入
+                        location.href = "@Url.Action("login","Account",new { returnUrl=Url.Action("Detail","Store",new { id =Model.ID})})";
+                    }
+                    else if (data == "OK") {
+                        alert('发表成功！');
+                    }
+                        //局部刷新
+                    
+                }
+            });
+        })
     </script>
-    </body>*@
-
 </div>
-
-<script>
-    $("#addcart").click(function () {
-        //异步
-        $("#msg").html("<img src='../../content/images/ProgressIcon.gif'>添加到购物车，请稍候...");
-        $.ajax({
-            type: 'post',
-            async: true,
-            url: '../../ShoppingCart/AddCart',
-            data: { id: "@Model.ID" },
-            dataType: 'json',
-            success: function (data) {
-                //如果没有登录，跳转到登录页
-                if (data == "nologin") {
-                    location.href = "@Url.Action("login", "Account",
-                                         new {returnUrl = Url.Action("Detail", "Store", new {id = Model.ID})})";
-                }
-                else {
-                    //添加到购物车成功，把动画取消
-                    $("#msg").html(data);
-                    //2秒后，自动重新刷新此区域
-                    setTimeout(function () {
-                        location.reload();
-                    },
-                        2000);
-                }
-            }
-        });
-    });
-</script>
