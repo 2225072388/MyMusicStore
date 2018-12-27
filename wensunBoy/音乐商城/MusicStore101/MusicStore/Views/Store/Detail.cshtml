@@ -91,12 +91,20 @@
     <br />
     <br />
     <br />*@
-
-    @*@百度Ueditor的呈现*@
+    @*显示评论*@
     <div class="row">
         <div class="col-md-10">
+            <div id="divCmt">
+                @Html.Raw(ViewBag.Cmt)
+            </div>
+        </div>
+    </div>
+
+    @*@百度Ueditor的呈现*@
+    <div class="row" >
+        <div class="col-md-10">
             <div class="form-group">
-                <textarea id="editor"name="editor"></textarea>
+                <textarea id="editor" name="editor" style="width:800px;height:200px;margin-top:100px;"></textarea>
             </div>
             <button id="btnCmt" type="button" class="btn btn-success">评论</button>
         </div>
@@ -119,11 +127,11 @@
         //百度编辑器调用
         var editor = new baidu.editor.ui.Editor(
             {
-                UEDITOR_HOME_URL: '/ueditor1_4_3-utf8-net/',//配置编译器的路径
-                iframeCssUrl: '/ueditor1_4_3-utf8-net/themes/iframe.css',//自定义样式路径
+                UEDITOR_HOME_URL:'/ueditor/',//配置编译器的路径
+                iframeCssUrl: '/ueditor/themes/iframe.css',//自定义样式路径
                 initialContent: '五星好评',//初始内容
                 autoHeightEnabled: true,//高度是否自动适应
-                minFrameHeight: 500//编译器最小的高度
+                //minFrameHeight: 500//编译器最小的高度
             });
         editor.render('editor');
 
@@ -131,34 +139,67 @@
         $("#btnCmt").click(function () {
             //获取到编辑器中的内容
             UE.getEditor('editor');
-            var content = UE.geteditor('editor').getContent();
+            var content = UE.getEditor('editor').getContent();
             //console.log(content);
 
             //ajax提交
             $.ajax({
                 type: 'post',
                 asyn: true,
-                url: '@Url.Action("AddCmt","Store")',
+                url: '@Url.Action("AddCmt", "Store")',
                 data: {
                     "id": "@Model.ID",
                     "cmt": content,
                     "reply": ""
                 },
-                dataType: "json",
-                success: function(data)
-                {
-                    if (data == 'nologon')
-                    {
+                dataType: 'json',
+                success: function (data) {
+                    if (data == 'nologin') {
                         //如果没登入
                         location.href = "@Url.Action("login","Account",new { returnUrl=Url.Action("Detail","Store",new { id =Model.ID})})";
                     }
-                    else if (data == "OK") {
+                    else { 
+                        //html文本注入Div
+                        $("#divCmt").html(data); 
+                        //清空Ueditor编译器
+                        UE.getEditor('editor').setContent("");
+                        location.reload();
                         alert('发表成功！');
-                    }
-                        //局部刷新
                     
+                        
+                    }
+                    //局部刷新
+
                 }
             });
-        })
+        });
+
+        //添加购物车
+        $("#addcart").click(function() {
+            //异步
+            $("#msg").html("<img src='../../content/images/loading.gif'>添加到购物车，请稍候...");
+            $.ajax({
+                type: 'post',
+                async: true,
+                url: '../../ShoppingCart/AddCart',
+                data: { id: "@Model.ID" },
+                dataType: 'json',
+                success: function(data) {
+                    //如果没有登录，跳转到登录页
+                    if (data == "nologin") {
+                        location.href = "@Url.Action("login", "Account",
+                        new {returnUrl = Url.Action("Detail", "Store", new {id = Model.ID})})";
+                    } else {
+                        //添加到购物车成功，把动画取消
+                        $("#msg").html(data);
+                        //2秒后，自动重新刷新此区域
+                        setTimeout(function() {
+                            location.reload();
+                        },
+                            2000);
+                    }
+                }
+            });
+        });
     </script>
 </div>
