@@ -37,6 +37,7 @@ namespace MusicStoreEntity
         public IDbSet<OrderDetail> OrderDetails { get; set; }
 
         public IDbSet<Reply> Replys { get; set; }
+        public IDbSet<LikeReply> LikeReplies { get; set; }
 
         #endregion
     }
