@@ -144,11 +144,11 @@
         //alert($("#pReplyID").val());
         //取回复的内容
         var divName = 'Content-' + id;
-        var content ="<p></p>"+ $("#" + divName).html();
+        var content = "<p></p>" + $("#" + divName).html();
 
         //把内容赋值给ueditor
         var ue = UE.getEditor('editor');
-        ue.ready(function() {
+        ue.ready(function () {
             ue.setContent(content);
         });
     }
@@ -172,38 +172,67 @@
 
     //点赞
 
-    function Like(id)
+//赞
+
+   function Like(id)
     {
-        //ajax 查询出子回复
+        console.log("1");
         $.ajax({
             type: 'post',
             asyn: true,
             url: '@Url.Action("Like","Store")',
-            data: { "pid": id },
+            data: {
+                "id": id
+            },
             dataType: 'json',
             success: function (data) {
-                //detail
-                //modal
+
+                //登录
+                if (data == "nologin")
+                {
+                    location.href="@Url.Action("login", "Account",
+                 new { returnUrl = Url.Action("Detail", "Store",new{id=Model.ID})})";
+                }
+
+                else if (data != "false")
+                {
+                    $('#divCmt').html(data);
+                    $('#div-SonCmts').html(data);
+                }
             }
         });
-    }
+   }
 
-    //踩
-    function hate(id)
-    {
-        //ajax 查询出子回复
+
+
+     //踩
+    function Hate(id)
+                    {
         $.ajax({
             type: 'post',
             asyn: true,
             url: '@Url.Action("Hate","Store")',
-            data: { "pid": id },
+            data: {
+                    "id": id
+            },
             dataType: 'json',
             success: function (data) {
-                //detail
-                //modal
+                //登录
+                if (data == "nologin")
+                {
+                    location.href="@Url.Action("login", "Account",
+                    new { returnUrl = Url.Action("Detail", "Store",new{id=Model.ID})})";
+                }
+
+                else if (data != "false")
+                {
+                    $('#divCmt').html(data);
+                    $('#div-SonCmts').html(data);
+                }
             }
         });
     }
+
 
 
     //百度编辑器调用
