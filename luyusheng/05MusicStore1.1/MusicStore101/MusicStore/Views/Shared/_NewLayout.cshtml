@@ -55,15 +55,14 @@
             {
                 //登录成功显示用户姓名,点姓名展开向下菜单
                 <li class="dropdown">
-                    <a href="#"class="dropdown-toggle" data-toggle="dropdown" role="button"
-                       aria-haspopup ="true" aria-expanded="false">         
-                    <img src="@user.Person.Avarda" alt="头像" id="userAvarda"/>
-                         
-                        @*百度地图定位*@
-                        <span id="city" class="glyphicon glyphicon-map-marker">定位中...</span><span id="district"></span>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false">
+                        <img src="@user.Person.Avarda" alt="头像" id="userAvarda" />
+
+                        
 
                         @user.Person.Name
-                    <span class="caret"></span>
+                        <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="@Url.Action("index","ShoppingCart")">购物车(@carts.Count)</a></li>
@@ -76,12 +75,19 @@
             }
         </ul>
     </div>
+    <div class="xcy">
+        <b>
+            <marquee>欢迎来到我的音乐商店，里面的音乐可以让你感受到快乐与安心和幸福，愿你每天都开心，幸福哦</marquee>
+        </b>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-md-3">
                 @*左侧导航*@
-               @Html.Partial("_GetGenreMenu",
-                new MusicStoreEntity.EntityDbContext().Genres.ToList())
+                @Html.Partial("_GetGenreMenu",
+                 new MusicStoreEntity.EntityDbContext().Genres.ToList())
+                @*地图定位*@
+                <span id="city" class="glyphicon glyphicon-map-marker">定位中...</span><span id="district"></span>
             </div>
             <div class="col-md-9">
                 @*操作区*@
@@ -89,8 +95,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
-             @Html.Partial("_FooterLayout")
+            <div class="col-md-12">
+                @*底部*@
+                @Html.Partial("_FooterLayout")
             </div>
         </div>
     </div>
@@ -99,46 +106,49 @@
 </body>
 </html>
 
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=emKzIR8orgFMUjXELjgUlII"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mKNsv8BifpOEERjGwj80FS9agwndhdw2"></script>
 <script>
+    //定位
     var geolocation = new BMap.Geolocation();
     geolocation.getCurrentPosition(function(r)
     {
-        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS){
             Lng = r.point.lng;
             Lat = r.point.lat;
             console.log(r);
-        //显示百度地图查询结果 地区
-        if (r.address.district!= ""){
-            document.getElementById("district").innerHTML =r.address.district;
+        //显示地图查询结果 地区
+        if (r.address.district != ""){
+            document.getElementById("district").innerText =r.address.district;
         }
-            //显示百度地图查询结果 城市
+         //显地图查询结果 城市
         if (r.address.city != ""){
-            document.getElementById("city").innerHTML = r.address.city;
+            document.getElementById("city").innerText = r.address.city;
             $.ajax({
                 url: "../home/GetWeather",
                 data: { city: r.address.city },
                 datatype: "json",
-                success: function (data) {
+                type:"post",
+                success: function (data){
                     $("#divWeather").html(data);
                 }
             });
         }
         else {
-            document.getElementById('city').innerHTML = "柳州市";
+            document.getElementById('city').innerText = "柳州市";
             $.ajax({
                 url: "../home/GetWeather",
                 data: { city: "柳州市" },
+                datatype: "json",
+                type: "post",
                 datatype: function (data) {
                     $("#divWeather").html(data);
                 }
             });
         }
-        }
+    }
         else
         {
-            document.getElementById("city").innerHTML ="无法定位";
+            document.getElementById("city").innerText ="无法定位";
         }
-    },
-    {enableHighAccuracy:true});
+    },{enableHighAccuracy:true});
 </script>
