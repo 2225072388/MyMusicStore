@@ -77,13 +77,6 @@
                 <h4 class="modal-title" id="myModalLabel">原回复</h4>
             </div>
             <div class="modal-body">
-                @*子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />
-                子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />
-                子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />
-                子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />
-                子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />
-                子回复。。。<a href='#' class='reply' style='margin:0 20px 0 40px'><i class='glyphicon glyphicon-thumbs-up'></i>(0)</a><a href='#' class='reply' style='margin:0 20px'><i class='glyphicon glyphicon-thumbs-down'></i>(0)</a><br />*@
-                
             </div>
             <div class="modal-footer">
             </div>
@@ -98,8 +91,8 @@
         $("#pReplyID").val(id);
         //alert($("#pReplyID").val());
         //取回复的内容
-        var divName = 'Content-' +id;
-        var content = "<br/><br/><div style='margin:20px;border:1px solid black'>引用:<br/>"+ $("#" + divName).html()+"</div>";
+        var divName = 'Content-'+divid;
+        var content = "<br/><br/><div style='margin:20px;border:1px solid black'>引用:<br/>"+ $("#"+divName).html()+"</div>";
 
         //把内容赋值给ueditor
         var ue = UE.getEditor('editor');
@@ -107,18 +100,18 @@
             ue.setContent(content);
         });   
     }
-
+     
     function ShowCmt(id){
         //ajax查询出子回复
         $.ajax({
             type: 'post',
             asyn: true,
-            url: '@Url.Action("showCmt","Store")',
+            url: '@Url.Action("ShowCmts","Store")',
             data: { "pid": id },
             dataType: 'json',
             success: function (data){
                 $("#Div-SonCmts").html(data);
-                $('myModal').modal('toggle');
+                $('#myModal').modal('toggle');
             }
         });
     }
@@ -211,8 +204,7 @@
                         $("#divCmt").html(data);
                         //清空ueditor编辑器
                         UE.getEditor("editor").setContent('');
-                        location.reload();
-                        alert('发表成功!');                   
+                        location.reload();           
                     }
                 }
             });

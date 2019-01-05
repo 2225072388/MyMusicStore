@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MusicStoreEntity.UserAndRole;
 
 namespace MusicStore.Controllers
 {
@@ -20,11 +21,12 @@ namespace MusicStore.Controllers
         {
             var detail = _context.Albums.Find(id);
             //显示评论
-            var cmt = _context.Replys.Where(x => x.Album.ID == id && x.ParentReply == null)
-             .OrderByDescending(x => x.CreateDateTime).ToList();
+            var cmt = _context.Replys.Where(x =>x.Album.ID == id && x.ParentReply == null)
+             .OrderByDescending(x =>x.CreateDateTime).ToList();
             ViewBag.Cmt = _GetHtml(cmt);
             return View(detail);
         } 
+
         /// <summary>
         /// 点赞
         /// </summary>
@@ -38,14 +40,15 @@ namespace MusicStore.Controllers
                 return Json("nologin");
 
             //判断用户是否对这条回复点过赞或踩
-            var person = _context.Persons.Find((Session["LoginUserSessionModel"] as LoginUserSessionModel).Person.ID);
+            var person = _context.Persons.Find((Session["LoginUserSessionModel"] as 
+                LoginUserSessionModel).Person.ID);
             var reply = _context.Replys.Find(id);
-            var IsLike = _context.LikeReply.SingleOrDefault(x => x.Reply.ID == reply.ID && person.ID == person.ID);
+            var IsLike = _context.LikeReply.SingleOrDefault(x => x.Person.ID == reply.ID && x.Person.ID == person.ID);
 
             //显示评论、排序
             var albumSay = _context.Replys.Where
-                (x => x.Album.ID == reply.Album.ID && x.ParentReply == null)
-                .OrderByDescending(x => x.CreateDateTime).ToList();
+                (x =>x.Album.ID == reply.Album.ID && x.ParentReply == null)
+                .OrderByDescending(x =>x.CreateDateTime).ToList();
 
             //刷新当前评论
             var htmlString = "";
@@ -87,9 +90,10 @@ namespace MusicStore.Controllers
                 return Json("nologin");
 
             //判断用户是否对这条回复点过赞或踩
-            var person = _context.Persons.Find((Session["LoginUserSessionModel"] as LoginUserSessionModel).Person.ID);
+            var person = _context.Persons.Find((Session["LoginUserSessionModel"] as
+                LoginUserSessionModel).Person.ID);
             var reply = _context.Replys.Find(id);
-            var IsLike = _context.LikeReply.SingleOrDefault(x => x.Person.ID == reply.ID && person.ID == person.ID);
+            var IsLike = _context.LikeReply.SingleOrDefault(x =>x.Person.ID == reply.ID && x.Person.ID == person.ID);
 
             //保存 reply实体中like+1或hate+1 LikeReply添加一条记录
             if (IsLike == null || IsLike.Person.ID != person.ID)
@@ -98,13 +102,13 @@ namespace MusicStore.Controllers
                 var ok = new LikeReply()
                 {
                     Reply = reply,
-                    IsNotLike = true,
+                    IsNotLike = false,
                     Person = person
                 };
                 _context.LikeReply.Add(ok);
                 _context.SaveChanges();
 
-                var albumSay = _context.Replys.Where(x => x.Album.ID == reply.Album.ID && x.ParentReply == null).OrderByDescending(x => x.CreateDateTime).ToList();
+                var albumSay = _context.Replys.Where(x =>x.Album.ID == reply.Album.ID && x.ParentReply == null).OrderByDescending(x =>x.CreateDateTime).ToList();
                 var htmlString = _GetHtml(albumSay);
                 return Json(htmlString);
             }
@@ -114,13 +118,12 @@ namespace MusicStore.Controllers
                 reply.Hate -= 1;
                 _context.SaveChanges();
                 //显示评论
-                var albumSay = _context.Replys.Where(x => x.Album.ID == reply.Album.ID && x.ParentReply == null).OrderByDescending(x => x.CreateDateTime).ToList();
+                var albumSay = _context.Replys.Where(x =>x.Album.ID == reply.Album.ID && x.ParentReply == null).OrderByDescending(x =>x.CreateDateTime).ToList();
                 //刷新
                 var htmlString = _GetHtml(albumSay);
                 return Json(htmlString);
             }
         }
-
 
         /// <summary>
         /// 生成回复的显示html文本
@@ -139,8 +142,7 @@ namespace MusicStore.Controllers
                               "' alt='头像' style='width:40px;border-radius:50%;'>";
                 htmlString += "</div>";
                 htmlString += "<div class='media-body' id='Content-" + item.ID + "'>";
-                htmlString += "<h5 class='media-heading'> <em>" + item.Person.Name + "</em>&nbsp;&nbs  发表于" +
-                              item.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + "</h5>";
+                htmlString += "<h5 class='media-heading'><em>"+item.Person.Name + "</em>&nbsp;&nbs  发表于"+item.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒")+"</h5>";
                 htmlString += item.Content;
                 htmlString += "</div>";
                 //查询当前回复的下一级回复
@@ -190,47 +192,44 @@ namespace MusicStore.Controllers
             _context.SaveChanges();
 
             //局部刷新显示成最新的评论
-            var replies = _context.Replys.Where(x => x.Album.ID == album.ID && x.ParentReply == null)
+            var replies = _context.Replys.Where(x =>x.Album.ID == album.ID && x.ParentReply == null)
               .OrderByDescending(x => x.CreateDateTime).ToList();
             return Json(_GetHtml(replies));
         }
 
         //显示子回复
         [HttpPost]
-        public ActionResult showCmts(string pid)
+        public ActionResult ShowCmts(string pid)
         {
             var htmlString = "";
             //子回复
             Guid id = Guid.Parse(pid);
-            var cmts = _context.Replys.Where(x => x.ParentReply.ID == id).OrderByDescending(x => x.CreateDateTime).ToList();
+            var cmts = _context.Replys.Where(x =>x.ParentReply.ID == id).OrderByDescending(x =>x.CreateDateTime).ToList();
             //原回复
             var pcmt = _context.Replys.Find(id);
             htmlString += "<div class=\"modal-header\">";
-            htmlString += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>";
+            htmlString += "<button type=\"button\"class=\"close\"data-dismiss=\"modal\"aria-hidden=\"true\">×</button>";
             htmlString += "<h4 class=\"modal-title\" id=\"myModalLabel\">";
-            htmlString += "<em>楼主&nbsp;&nbsp;</em>" + pcmt.Person.Name + "  发表于" + pcmt.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + ":<br/>" + pcmt.Content;
+            htmlString += "<em>楼主&nbsp;&nbsp;</em>" + pcmt.Person.Name + " 发表于" + pcmt.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + ":<br/>" + pcmt.Content;
             htmlString += " </h4> </div>";
             htmlString += "<div class=\"modal-body\">";
 
             //子回复
-            htmlString += "<ul class='media-list' style='margin-left:20px;'>";
+            htmlString += "<ul class='media-list'style='margin-left:20px;'>";
             foreach (var item in cmts)
             {
                 htmlString += "<li class='media'>";
                 htmlString += "<div class='media-left'>";
-                htmlString += "<img class='media-object' src='" + item.Person.Avarda +
-                              "' alt='头像' style='width:40px;border-radius:50%;'>";
+                htmlString += "<img class='media-object' src='" + item.Person.Avarda + "'alt='头像' style='width:40px;border-radius:50%;'>";
                 htmlString += "</div>";
                 htmlString += "<div class='media-body' id='Content-" + item.ID + "'>";
-                htmlString += "<h5 class='media-heading'> <em>" + item.Person.Name + "</em>&nbsp;&nbs  发表于" +
-                              item.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + "</h5>";
+                htmlString += "<h5 class='media-heading'><em>" + item.Person.Name + "</em>&nbsp;&nbsp 发表于" +item.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒")+"</h5>";
                 htmlString += item.Content;
                 htmlString += "</div>";
 
-                htmlString += "<h6><a href='#div-editor' class='reply' onclick=\"javascript:GetQuote('" + item.ParentReply.ID + "','" + item.ID +
-                              "');\">回复</a>(<a href='#' class='reply'  style='margin:0 20px 0 40px' onclick=\"javascript:Like('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like + ")</a>" +
-                              "<a href='#' class='reply' style='margin:0 20px 0 40px'   onclick=\"javascript:Like('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like + ")</a>" +
-                              "<a href='#' class='reply' style='margin:0 20px'  onclick=\"javascript:Hate('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-down'></i>(" + item.Hate + ")</a></h6>";
+                htmlString += "<h6><a href='#div-editor' class='reply' onclick=\"javascript:GetQuote('" + item.ParentReply.ID + "','" + item.ID + "');\">回复</a>" +
+                               "<a href='#' class='reply' style='margin:0 20px 0 40px'   onclick=\"javascript:Like('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like + ")</a>" +
+                               "<a href='#' class='reply' style='margin:0 20px'   onclick=\"javascript:Hate('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-down'></i>(" + item.Hate + ")</a></h6>";
                 htmlString += "</li>";
             }
             htmlString += "</ul>";
