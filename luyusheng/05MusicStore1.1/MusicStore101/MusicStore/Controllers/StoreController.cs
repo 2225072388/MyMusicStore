@@ -138,18 +138,18 @@ namespace MusicStore.Controllers
                 htmlString += "<img class='media-object' src='" + item.Person.Avarda +
                               "' alt='头像' style='width:40px;border-radius:50%;'>";
                 htmlString += "</div>";
-                htmlString += "<div class='media-body'id='Content-"+item.ID+"'>";
-                htmlString += "<h5 class='media-heading'><em>" + item.Person.Name + "</em>&nbsp;&nbsp;发表于" +
+                htmlString += "<div class='media-body' id='Content-" + item.ID + "'>";
+                htmlString += "<h5 class='media-heading'> <em>" + item.Person.Name + "</em>&nbsp;&nbs  发表于" +
                               item.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + "</h5>";
                 htmlString += item.Content;
                 htmlString += "</div>";
                 //查询当前回复的下一级回复
                 var sonCmt = _context.Replys.Where(x => x.ParentReply.ID == item.ID).ToList();
-                htmlString += "<h6><a href='#div-editor'class='reply'onclick=\"javascript:GetQuote('"+item.ID+
-                    "','"+ item.ID +"');\">回复</a>(<a href='#'class='reply'onclick=\"javascript:ShowCmt('"+ item.ID + "');\">"+ sonCmt.Count +"</a>)条"+
-                    "<a href='#'class='reply'style='margin:0 20px 0 40px' onclick=\"javascript:Like('"+ item.ID +"');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like +")</a>"+
-                    "<a href='#'class='reply'style='margin:0 20px'onclick=\"javascript:Hate('"+ item.ID +"');\"><i class='glyphicon glyphicon-thumbs-down'></i>(" + item.Hate +")</a></h6>";
-                
+                htmlString += "<h6><a href='#div-editor' class='reply' onclick=\"javascript:GetQuote('" + item.ID + "','" + item.ID +
+                               "');\">回复</a>(<a href='#' class='reply'  onclick=\"javascript:ShowCmt('" + item.ID + "');\">" + sonCmt.Count + "</a>)条" +
+                               "<a href='#' class='reply' style='margin:0 20px 0 40px'   onclick=\"javascript:Like('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like + ")</a>" +
+                               "<a href='#' class='reply' style='margin:0 20px'   onclick=\"javascript:Hate('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-down'></i>(" + item.Hate + ")</a></h6>";
+
                 htmlString += "</li>";
             }
             htmlString += "</ul>";
@@ -202,21 +202,20 @@ namespace MusicStore.Controllers
             var htmlString = "";
             //子回复
             Guid id = Guid.Parse(pid);
-            var cmts = _context.Replys.Where(x => x.ParentReply.ID ==id).OrderByDescending(x=>x.CreateDateTime).ToList();
+            var cmts = _context.Replys.Where(x => x.ParentReply.ID == id).OrderByDescending(x => x.CreateDateTime).ToList();
             //原回复
             var pcmt = _context.Replys.Find(id);
             htmlString += "<div class=\"modal-header\">";
-            htmlString += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">x</button>";
+            htmlString += "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">×</button>";
             htmlString += "<h4 class=\"modal-title\" id=\"myModalLabel\">";
-            htmlString +="<em>楼主&nbsp;&nbsp;</em>" +pcmt.Person.Name+ "&nbsp; &nbsp;发表于" + pcmt.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒")+":<br/>"+pcmt.Content;
-            htmlString += "</h4></div>";
-
+            htmlString += "<em>楼主&nbsp;&nbsp;</em>" + pcmt.Person.Name + "  发表于" + pcmt.CreateDateTime.ToString("yyyy年MM月dd日 hh点mm分ss秒") + ":<br/>" + pcmt.Content;
+            htmlString += " </h4> </div>";
             htmlString += "<div class=\"modal-body\">";
+
             //子回复
             htmlString += "<ul class='media-list' style='margin-left:20px;'>";
             foreach (var item in cmts)
             {
-
                 htmlString += "<li class='media'>";
                 htmlString += "<div class='media-left'>";
                 htmlString += "<img class='media-object' src='" + item.Person.Avarda +
@@ -233,9 +232,7 @@ namespace MusicStore.Controllers
                               "<a href='#' class='reply' style='margin:0 20px 0 40px'   onclick=\"javascript:Like('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-up'></i>(" + item.Like + ")</a>" +
                               "<a href='#' class='reply' style='margin:0 20px'  onclick=\"javascript:Hate('" + item.ID + "');\"><i class='glyphicon glyphicon-thumbs-down'></i>(" + item.Hate + ")</a></h6>";
                 htmlString += "</li>";
-
             }
-
             htmlString += "</ul>";
             htmlString += "</div><div class=\"model-footer\"></div>";
             return Json(htmlString);
